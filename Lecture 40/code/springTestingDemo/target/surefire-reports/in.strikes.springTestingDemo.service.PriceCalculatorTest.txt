@@ -1,0 +1,14 @@
+-------------------------------------------------------------------------------
+Test set: in.strikes.springTestingDemo.service.PriceCalculatorTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.006 s <<< FAILURE! -- in in.strikes.springTestingDemo.service.PriceCalculatorTest
+in.strikes.springTestingDemo.service.PriceCalculatorTest.shouldApplyDiscountToPrice -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <700.0> but was: <800.0>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:158)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:139)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:201)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:72)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:67)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:924)
+	at in.strikes.springTestingDemo.service.PriceCalculatorTest.shouldApplyDiscountToPrice(PriceCalculatorTest.java:23)
+
