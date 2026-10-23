@@ -14,7 +14,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                              Object handler) {
         String apiKey = request.getHeader("x-api-key");
 
-        if(apiKey != null && !apiKey.equals("secret123")) {
+        if(apiKey == null || !apiKey.equals("secret123")) {
             return false;
         }
 
