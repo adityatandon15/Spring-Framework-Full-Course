@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GateKeeper API Management control plane">
+    <title>GateKeeper Control Plane</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<main id="loginView" class="login-shell">
+    <section class="login-story">
+        <a class="brand brand-large" href="/">
+            <span class="brand-mark" aria-hidden="true">GK</span>
+            <span>GateKeeper</span>
+        </a>
+        <div class="story-copy">
+            <p class="eyebrow">API MANAGEMENT SERVICE</p>
+            <h1>One control plane.<br>Every tenant in its lane.</h1>
+            <p class="story-lead">Provision organizations, configure gateway routes and keep every tenant boundary explicit.</p>
+            <div class="architecture-strip" aria-label="GateKeeper architecture">
+                <div><span>01</span><strong>Manage</strong><small>Control plane</small></div>
+                <i></i>
+                <div><span>02</span><strong>Route</strong><small>Data plane</small></div>
+                <i></i>
+                <div><span>03</span><strong>Observe</strong><small>Analytics</small></div>
+            </div>
+        </div>
+        <p class="story-footer">GateKeeper · Spring Boot API Gateway</p>
+    </section>
+
+    <section class="login-panel">
+        <form id="loginForm" class="login-card">
+            <div>
+                <p class="eyebrow">CONTROL PLANE ACCESS</p>
+                <h2>Welcome back</h2>
+                <p class="muted">Sign in with a management account.</p>
+            </div>
+
+            <label class="field">
+                <span>Username</span>
+                <input id="loginUsername" name="username" autocomplete="username" placeholder="platform-admin" required>
+            </label>
+
+            <label class="field">
+                <span>Password</span>
+                <span class="password-wrap">
+                    <input id="loginPassword" name="password" type="password" autocomplete="current-password"
+                           placeholder="Enter password" required>
+                    <button id="togglePassword" class="text-button" type="button">Show</button>
+                </span>
+            </label>
+
+            <p id="loginError" class="form-error hidden"></p>
+            <button id="loginButton" class="button button-primary button-wide" type="submit">
+                <span>Sign in</span><span aria-hidden="true">→</span>
+            </button>
+
+            <div class="demo-access">
+                <span>Demo shortcuts</span>
+                <div>
+                    <button type="button" class="chip demo-login" data-username="platform-admin" data-password="platform123">Platform</button>
+                    <button type="button" class="chip demo-login" data-username="foodfast-admin" data-password="foodfast123">FoodFast</button>
+                    <button type="button" class="chip demo-login" data-username="quickshop-admin" data-password="quickshop123">QuickShop</button>
+                </div>
+            </div>
+        </form>
+    </section>
+</main>
+
+<div id="dashboardView" class="app-shell hidden">
+    <aside class="sidebar">
+        <a class="brand" href="#overview">
+            <span class="brand-mark" aria-hidden="true">GK</span>
+            <span>GateKeeper</span>
+        </a>
+
+        <nav id="mainNavigation" class="navigation" aria-label="Main navigation"></nav>
+
+        <div class="sidebar-user">
+            <div id="userInitials" class="avatar">PA</div>
+            <div>
+                <strong id="sidebarUsername">platform-admin</strong>
+                <span id="sidebarRole">Platform admin</span>
+            </div>
+            <button id="logoutButton" class="icon-button" type="button" title="Sign out" aria-label="Sign out">↗</button>
+        </div>
+    </aside>
+
+    <div class="workspace">
+        <header class="topbar">
+            <button id="mobileMenuButton" class="icon-button mobile-menu" type="button" aria-label="Open menu">☰</button>
+            <div>
+                <p class="eyebrow">GATEKEEPER / <span id="breadcrumbRole">PLATFORM</span></p>
+                <h2 id="pageTitle">Overview</h2>
+            </div>
+            <div class="topbar-meta">
+                <span class="live-indicator"><i></i> API connected</span>
+                <span id="roleBadge" class="role-badge">PLATFORM_ADMIN</span>
+            </div>
+        </header>
+
+        <div id="pageContent" class="page-content">
+            <section id="overviewSection" class="page-section"></section>
+
+            <section id="organizationsSection" class="page-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">TENANT DIRECTORY</p>
+                        <h1>Organizations</h1>
+                        <p class="muted">Provision tenants, control status and manage their administrator.</p>
+                    </div>
+                    <button id="createOrganizationButton" class="button button-primary" type="button">+ New organization</button>
+                </div>
+                <div class="table-card">
+                    <div class="table-toolbar">
+                        <label class="search-field">
+                            <span aria-hidden="true">⌕</span>
+                            <input id="organizationSearch" placeholder="Search name or slug">
+                        </label>
+                        <button id="refreshOrganizationsButton" class="button button-quiet" type="button">Refresh</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Organization</th><th>Slug</th><th>Status</th><th>Created</th><th class="align-right">Actions</th></tr></thead>
+                            <tbody id="organizationsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="organizationsEmpty" class="empty-state hidden">
+                        <strong>No organizations yet</strong>
+                        <span>Create FoodFast or QuickShop to begin.</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="routesSection" class="page-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">GATEWAY CONFIGURATION</p>
+                        <h1>Routes</h1>
+                        <p class="muted">Routing, traffic controls and transformations for your organization.</p>
+                    </div>
+                    <button id="createRouteButton" class="button button-primary" type="button">+ New route</button>
+                </div>
+                <div class="table-card">
+                    <div class="table-toolbar">
+                        <label class="search-field">
+                            <span aria-hidden="true">⌕</span>
+                            <input id="routeSearch" placeholder="Search route ID, name or path">
+                        </label>
+                        <button id="refreshRoutesButton" class="button button-quiet" type="button">Refresh</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Route</th><th>Public path</th><th>Policies</th><th>Status</th><th>Version</th><th class="align-right">Actions</th></tr></thead>
+                            <tbody id="routesTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="routesEmpty" class="empty-state hidden">
+                        <strong>No routes configured</strong>
+                        <span>Create the first route for this tenant.</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="organizationProfileSection" class="page-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">TENANT PROFILE</p>
+                        <h1>My organization</h1>
+                        <p class="muted">View tenant identity and update the display name.</p>
+                    </div>
+                </div>
+                <div id="tenantOrganizationCard" class="profile-grid"></div>
+            </section>
+
+            <section id="auditSection" class="page-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">OPERATOR HISTORY</p>
+                        <h1>Audit records</h1>
+                        <p class="muted">A chronological record of control-plane changes.</p>
+                    </div>
+                    <button id="refreshAuditButton" class="button button-quiet" type="button">Refresh</button>
+                </div>
+                <div class="table-card">
+                    <div class="table-scroll">
+                        <table>
+                            <thead><tr><th>Action</th><th>Resource</th><th>Actor</th><th>Result</th><th>Correlation ID</th><th>Time</th></tr></thead>
+                            <tbody id="auditTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div id="auditEmpty" class="empty-state hidden">
+                        <strong>No audit records</strong><span>Changes made from this panel will appear here.</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<dialog id="organizationDialog" class="modal">
+    <form id="organizationForm" class="modal-card">
+        <div class="modal-header">
+            <div><p class="eyebrow">PLATFORM OPERATION</p><h2 id="organizationDialogTitle">New organization</h2></div>
+            <button class="icon-button close-dialog" type="button" aria-label="Close">×</button>
+        </div>
+        <input id="organizationId" type="hidden">
+        <div class="form-grid">
+            <label class="field form-span"><span>Name</span><input id="organizationName" maxlength="150" placeholder="FoodFast" required></label>
+            <label class="field form-span"><span>Slug</span><input id="organizationSlug" maxlength="100" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" placeholder="foodfast" required><small>Lowercase letters, numbers and hyphens.</small></label>
+        </div>
+        <div class="modal-actions"><button class="button button-quiet close-dialog" type="button">Cancel</button><button class="button button-primary" type="submit">Save organization</button></div>
+    </form>
+</dialog>
+
+<dialog id="tenantAdminDialog" class="modal">
+    <form id="tenantAdminForm" class="modal-card">
+        <div class="modal-header">
+            <div><p class="eyebrow">TENANT ACCESS</p><h2 id="tenantAdminDialogTitle">Tenant administrator</h2><p id="tenantAdminOrganization" class="muted"></p></div>
+            <button class="icon-button close-dialog" type="button" aria-label="Close">×</button>
+        </div>
+        <input id="tenantAdminOrganizationId" type="hidden">
+        <input id="tenantAdminExists" type="hidden" value="false">
+        <div class="form-grid">
+            <label class="field form-span"><span>Username</span><input id="tenantAdminUsername" maxlength="100" placeholder="foodfast-admin" required></label>
+            <label class="field form-span"><span>Password</span><input id="tenantAdminPassword" type="password" minlength="8" maxlength="100" placeholder="Minimum 8 characters" required></label>
+            <label class="switch-row form-span"><span><strong>Account enabled</strong><small>Disabled users cannot log in.</small></span><input id="tenantAdminEnabled" type="checkbox" checked></label>
+        </div>
+        <div class="modal-actions split-actions">
+            <button id="deleteTenantAdminButton" class="button button-danger hidden" type="button">Delete administrator</button>
+            <span></span>
+            <button class="button button-quiet close-dialog" type="button">Cancel</button>
+            <button class="button button-primary" type="submit">Save administrator</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog id="routeDialog" class="modal modal-wide">
+    <form id="routeForm" class="modal-card">
+        <div class="modal-header">
+            <div><p class="eyebrow">GATEWAY CONFIGURATION</p><h2 id="routeDialogTitle">New route</h2></div>
+            <button class="icon-button close-dialog" type="button" aria-label="Close">×</button>
+        </div>
+        <input id="routePk" type="hidden">
+        <div class="form-section">
+            <h3>Route identity</h3>
+            <div class="form-grid">
+                <label class="field"><span>Route ID</span><input id="routeId" maxlength="100" placeholder="orders" required></label>
+                <label class="field"><span>Display name</span><input id="routeName" maxlength="200" placeholder="FoodFast Orders" required></label>
+                <label class="field form-span"><span>Public path pattern</span><input id="routePathPattern" maxlength="500" placeholder="/foodfast/orders/**" required></label>
+                <label class="field"><span>Target base URL</span><input id="routeTargetBaseUrl" type="url" maxlength="1000" placeholder="http://localhost:8093" required></label>
+                <label class="field"><span>Target path prefix</span><input id="routeTargetPathPrefix" maxlength="500" placeholder="/orders" required></label>
+            </div>
+        </div>
+        <div class="form-section">
+            <h3>Policies</h3>
+            <div class="form-grid form-grid-three">
+                <label class="field"><span>Requests / minute</span><input id="routeRequestsPerMinute" type="number" min="1" placeholder="100"></label>
+                <label class="field"><span>Timeout (ms)</span><input id="routeResponseTimeout" type="number" min="1" value="3000" required></label>
+                <label class="field"><span>Allowed methods</span><input id="routeAllowedMethods" placeholder="GET, POST" required><small>Comma-separated.</small></label>
+                <label class="switch-row"><span><strong>Idempotency</strong><small>Protect duplicate operations.</small></span><input id="routeIdempotency" type="checkbox"></label>
+                <label class="switch-row"><span><strong>Active</strong><small>Expose after saving.</small></span><input id="routeActive" type="checkbox"></label>
+            </div>
+        </div>
+        <div class="form-section">
+            <div class="inline-heading"><div><h3>Header rules</h3><p class="muted">Add or remove request and response headers.</p></div><button id="addHeaderRuleButton" class="button button-quiet" type="button">+ Add rule</button></div>
+            <div id="headerRulesContainer" class="rules-list"></div>
+        </div>
+        <div class="modal-actions"><button class="button button-quiet close-dialog" type="button">Cancel</button><button class="button button-primary" type="submit">Save route</button></div>
+    </form>
+</dialog>
+
+<dialog id="versionsDialog" class="modal modal-wide">
+    <div class="modal-card">
+        <div class="modal-header">
+            <div><p class="eyebrow">CONFIGURATION HISTORY</p><h2 id="versionsDialogTitle">Route versions</h2></div>
+            <button class="icon-button close-dialog" type="button" aria-label="Close">×</button>
+        </div>
+        <div id="versionsTimeline" class="timeline"></div>
+        <div class="modal-actions"><button class="button button-primary close-dialog" type="button">Done</button></div>
+    </div>
+</dialog>
+
+<script src="/app.js" defer></script>
+</body>
+</html>
